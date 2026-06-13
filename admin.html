@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — New Karki Art</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=Mukta:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230f2540'/><circle cx='50' cy='50' r='22' fill='none' stroke='%231466B8' stroke-width='5'/><line x1='50' y1='14' x2='50' y2='86' stroke='%23E0A53B' stroke-width='4'/><line x1='14' y1='50' x2='86' y2='50' stroke='%23E0A53B' stroke-width='4'/></svg>">
+<style>
+:root{--ink:#0f2540;--blue:#1466B8;--amber:#E0A53B;--bg:#FCFCFD;--surface:#fff;--text:#13233a;--muted:#5d6b80;--border:rgba(15,37,64,.12);--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:90px}
+h1,h2,h3{font-family:'Sora'}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+.topbar{background:var(--ink);color:#fff;padding:14px 0;position:sticky;top:0;z-index:50}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center}
+.topbar b{font-family:'Sora'}.topbar b span{color:var(--amber)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:50px;font-weight:600;font-size:15px;cursor:pointer;border:none;font-family:inherit;transition:.2s}
+.btn-p{background:var(--blue);color:#fff}.btn-p:hover{filter:brightness(1.1)}
+.btn-d{background:#fee2e2;color:#b91c1c}
+.btn-s{background:var(--surface);border:1.5px solid var(--border);color:var(--text)}
+.btn-sm{padding:8px 14px;font-size:13.5px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+/* login */
+#loginView{min-height:100vh;display:grid;place-items:center;padding:20px;position:relative;overflow:hidden}
+#loginView::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(circle at 22% 18%,rgba(20,102,184,.14),transparent 46%),
+  radial-gradient(circle at 82% 82%,rgba(224,165,59,.16),transparent 46%),
+  var(--bg);z-index:0}
+#loginView::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(20,102,184,.08) 2px,transparent 2px);background-size:26px 26px;z-index:0}
+.login-card{position:relative;z-index:1;background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:34px;max-width:380px;width:100%;box-shadow:0 24px 64px -20px rgba(15,37,64,.28)}
+.login-mark{width:64px;height:64px;border-radius:18px;background:var(--ink);display:grid;place-items:center;margin:0 auto 18px}
+.login-mark svg{width:40px;height:40px}
+.login-card h1{font-size:22px;margin-bottom:6px}
+.login-card p{color:var(--muted);font-size:14px;margin-bottom:22px}
+/* fields */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.field label small{color:var(--muted);font-weight:400;font-family:'Mukta'}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:11px;background:var(--bg);color:var(--text);font-family:inherit;font-size:16px}
+.field textarea{min-height:96px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.ne-input{font-family:'Mukta',sans-serif}
+/* tabs */
+/* drawer */
+#drawer{position:fixed;top:0;left:0;bottom:0;width:278px;background:var(--surface);border-right:1px solid var(--border);transform:translateX(-103%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:120;padding:16px 12px;overflow-y:auto;box-shadow:0 0 0 rgba(0,0,0,0)}
+#drawer.open{transform:none;box-shadow:24px 0 60px -30px rgba(17,24,39,.45)}
+.drawer-head{padding:10px 14px 18px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.drawer-head b{font-family:'Sora';font-size:19px;display:block}
+.drawer-head small{color:var(--muted);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+.drawer-link{display:flex;width:100%;align-items:center;gap:12px;padding:13px 14px;min-height:48px;border-radius:12px;border:none;background:none;font-family:inherit;font-size:15px;font-weight:600;color:var(--muted);cursor:pointer;text-align:left;margin-bottom:2px;transition:.2s}
+.drawer-link:hover{background:var(--bg);color:var(--text)}
+.drawer-link.active{background:var(--blue);color:#fff}
+#drawerOverlay{position:fixed;inset:0;background:rgba(17,24,39,.45);opacity:0;pointer-events:none;transition:opacity .28s;z-index:110}
+#drawerOverlay.show{opacity:1;pointer-events:auto}
+@media(min-width:980px){
+  #drawer{transform:none;box-shadow:none}
+  #drawerOverlay{display:none}
+  #drawerBtn{display:none}
+  .topbar .wrap, #adminView > .wrap{margin-left:294px;max-width:760px}
+}
+.panel{display:none;padding:18px 0}
+.panel.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.card h3{font-size:16px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.row2{grid-template-columns:1fr}}
+/* save bar */
+.savebar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:12px 16px;display:none;z-index:60;box-shadow:0 -8px 24px rgba(17,24,39,.08)}
+.savebar.show{display:block}
+.savebar .wrap{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.savebar .status{font-size:13.5px;color:var(--muted)}
+.savebar .status.ok{color:#16a34a;font-weight:600}
+.savebar .status.err{color:#dc2626;font-weight:600}
+/* portfolio */
+.plist{display:grid;gap:12px}
+.pitem{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px}
+.pitem img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--bg)}
+.pitem .pmeta{flex:1;min-width:0}
+.pitem .pmeta b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pitem .pmeta small{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.imgprev{width:100%;max-width:220px;border-radius:12px;margin-top:8px;display:none}
+.note{background:#fef3c7;border:1px solid #fcd34d;color:#92400e;padding:12px 14px;border-radius:11px;font-size:13.5px;margin-bottom:16px}
+.team-item,.tst-item{border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;background:var(--bg)}
+.item-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.item-head b{font-size:14px;color:var(--muted)}
+.spin{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+#adminView{display:none}
+.err-msg{color:#dc2626;font-size:13.5px;margin-top:10px;display:none}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="loginView">
+  <div class="login-card">
+    <div class="login-mark"><svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="26" stroke="#1466B8" stroke-width="6"/><line x1="50" y1="10" x2="50" y2="90" stroke="#E0A53B" stroke-width="5"/><line x1="10" y1="50" x2="90" y2="50" stroke="#E0A53B" stroke-width="5"/></svg></div>
+    <h1 style="text-align:center">New <span style="color:var(--amber)">Karki</span> Art</h1>
+    <p style="text-align:center">Admin Login · एडमिन लगइन</p>
+    <div id="demoHint" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:16px">Demo login — email: <b>newkarkiart88@gmail.com</b><br>password: <b>BalkrishnaKarkiArt@2083</b></div>
+    <div class="field"><label>Email</label><input type="email" id="loginEmail" autocomplete="username"></div>
+    <div class="field"><label>Password · पासवर्ड</label>
+      <div style="position:relative">
+        <input type="password" id="loginPass" autocomplete="current-password" style="padding-right:48px">
+        <button type="button" id="passToggle" aria-label="Show password" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;font-size:17px;padding:8px">👁</button>
+      </div></div>
+    <button class="btn btn-p" style="width:100%" id="loginBtn">Login · लगइन</button>
+    <div class="err-msg" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ============ ADMIN ============ -->
+<div id="adminView">
+  <div id="drawerOverlay"></div>
+  <nav id="drawer" aria-label="Admin sections">
+    <div class="drawer-head"><b>New <span style="color:var(--amber)">Karki</span> Art</b><small>Admin · एडमिन</small></div>
+    <button data-tab="brand" class="drawer-link active">🎨 <span>Branding · ब्रान्ड</span></button>
+    <button data-tab="about" class="drawer-link">📝 <span>About · हाम्रोबारे</span></button>
+    <button data-tab="services" class="drawer-link">🖨️ <span>Services · सेवा</span></button>
+    <button data-tab="contact" class="drawer-link">📞 <span>Contact · सम्पर्क</span></button>
+    <button data-tab="hero" class="drawer-link">🏠 <span>Homepage · गृहपृष्ठ</span></button>
+    <button data-tab="stats" class="drawer-link">📊 <span>Stats · आँकडा</span></button>
+    <button data-tab="tst" class="drawer-link">⭐ <span>Reviews · समीक्षा</span></button>
+    <button data-tab="portfolio" class="drawer-link">📷 <span>Photos · फोटोहरू</span></button>
+    <button data-tab="profile" class="drawer-link">⚙️ <span>Profile · प्रोफाइल</span></button>
+  </nav>
+  <div id="demoBanner" style="display:none;background:#fef3c7;color:#92400e;text-align:center;padding:9px 14px;font-size:13.5px;font-weight:600">⚠️ DEMO MODE — Supabase not connected. Changes are NOT saved. · डेमो मोड</div>
+  <div class="topbar">
+    <div class="wrap">
+      <b>New <span>Karki</span> Art — Admin</b>
+      <button class="btn btn-s btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div id="loadingBar" style="display:none;text-align:center;color:var(--muted);padding:14px;font-size:14px"><span class="spin" style="border-color:rgba(0,0,0,.2);border-top-color:var(--blue)"></span> Loading… · लोड हुँदैछ</div>
+    <button id="drawerBtn" class="btn btn-s btn-sm" aria-expanded="false" aria-controls="drawer" style="margin:14px 0 4px">☰ <span data-current>Branding · ब्रान्ड</span></button>
+
+    <!-- BRANDING -->
+    <div class="panel active" data-panel="brand">
+      <div class="card">
+        <h3>🎨 Business identity</h3>
+        <div class="field"><label>Business name · व्यवसायको नाम</label><input id="bName"></div>
+        <div class="row2">
+          <div class="field"><label>Tagline (English)</label><input id="bTagEn"></div>
+          <div class="field"><label>ट्यागलाइन (नेपाली)</label><input id="bTagNe" class="ne-input"></div>
+        </div>
+        <div class="note">The second word of the name is shown in the accent color on the website. · नामको दोस्रो शब्द रंगीन देखिन्छ।</div>
+      </div>
+      <div class="card">
+        <h3>🖼️ Logo</h3>
+        <div class="field"><label>Upload logo (replaces the round icon) · लोगो</label><input type="file" id="bLogoFile" accept="image/*"></div>
+        <img id="bLogoPrev" style="display:none;width:96px;height:96px;object-fit:cover;border-radius:18px;border:1px solid var(--border);margin-bottom:12px">
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-d btn-sm" id="bLogoRemove" type="button">Remove logo · हटाउनुहोस्</button>
+        </div>
+        <div class="note" style="margin-top:12px">Logo is uploaded when you press Save. · सेभ थिचेपछि अपलोड हुन्छ।</div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="panel" data-panel="about">
+      <div class="card">
+        <h3>📝 About Us text</h3>
+        <div class="field"><label>English</label><textarea id="aboutEn"></textarea></div>
+        <div class="field"><label>नेपाली</label><textarea id="aboutNe" class="ne-input"></textarea></div>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="panel" data-panel="services">
+      <div class="note">These are the service names shown on the website, grouped in four sections. Add, edit, or remove any. · वेबसाइटमा देखिने सेवाहरू।</div>
+      <div class="card"><h3>🖨️ Printing Services · प्रिन्टिङ सेवा</h3><div id="svcList-print"></div><button class="btn btn-s btn-sm" onclick="addSvc('print')">+ Add · थप्नुहोस्</button></div>
+      <div class="card"><h3>🎨 Design Services · डिजाइन सेवा</h3><div id="svcList-design"></div><button class="btn btn-s btn-sm" onclick="addSvc('design')">+ Add · थप्नुहोस्</button></div>
+      <div class="card"><h3>💼 Business Services · व्यवसाय सेवा</h3><div id="svcList-business"></div><button class="btn btn-s btn-sm" onclick="addSvc('business')">+ Add · थप्नुहोस्</button></div>
+      <div class="card"><h3>✍️ Custom Work · कस्टम काम</h3><div id="svcList-custom"></div><button class="btn btn-s btn-sm" onclick="addSvc('custom')">+ Add · थप्नुहोस्</button></div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="panel" data-panel="contact">
+      <div class="card">
+        <h3>📞 Contact details</h3>
+        <div class="row2">
+          <div class="field"><label>Phone · फोन</label><input id="cPhone" inputmode="tel"></div>
+          <div class="field"><label>WhatsApp</label><input id="cWa" inputmode="tel"></div>
+        </div>
+        <div class="field"><label>Email · इमेल</label><input id="cEmail" type="email"></div>
+        <div class="row2">
+          <div class="field"><label>Hours (English)</label><input id="cHoursEn"></div>
+          <div class="field"><label>समय (नेपाली)</label><input id="cHoursNe" class="ne-input"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Address (English)</label><input id="cAddrEn"></div>
+          <div class="field"><label>ठेगाना (नेपाली)</label><input id="cAddrNe" class="ne-input"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Map Latitude</label><input id="cLat" inputmode="decimal"></div>
+          <div class="field"><label>Map Longitude</label><input id="cLng" inputmode="decimal"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="panel" data-panel="hero">
+      <div class="card">
+        <h3>🏠 Homepage headline</h3>
+        <div class="note">Tip: keep <b>&lt;span class="grad"&gt;...&lt;/span&gt;</b> around the words you want in color.</div>
+        <div class="field"><label>Headline (English)</label><textarea id="hHeadEn" style="min-height:70px"></textarea></div>
+        <div class="field"><label>शीर्षक (नेपाली)</label><textarea id="hHeadNe" class="ne-input" style="min-height:70px"></textarea></div>
+        <div class="field"><label>Subheading (English)</label><textarea id="hSubEn" style="min-height:70px"></textarea></div>
+        <div class="field"><label>उपशीर्षक (नेपाली)</label><textarea id="hSubNe" class="ne-input" style="min-height:70px"></textarea></div>
+      </div>
+      <div class="card">
+        <h3>🃏 Hero card rows (next to the color bars)</h3>
+        <div id="hcList"></div>
+        <button class="btn btn-s btn-sm" id="addHc">+ Add row · थप्नुहोस्</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="panel" data-panel="stats">
+      <div class="card">
+        <h3>📊 Numbers shown in "Why Choose Us"</h3>
+        <div class="note">Number + suffix make e.g. <b>1000</b> + <b>+</b> = "1000+", or <b>100</b> + <b>%</b> = "100%".</div>
+        <div id="statsList"></div>
+        <button class="btn btn-s btn-sm" id="addStat">+ Add stat · आँकडा थप्नुहोस्</button>
+      </div>
+      <div class="card">
+        <h3>✅ Feature badges (below stats) · विशेषता</h3>
+        <div id="featsList"></div>
+        <button class="btn btn-s btn-sm" id="addFeat">+ Add badge · थप्नुहोस्</button>
+      </div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div class="panel" data-panel="tst">
+      <div class="card">
+        <h3>⭐ Customer reviews</h3>
+        <div id="tstList"></div>
+        <button class="btn btn-s btn-sm" id="addTst">+ Add review · समीक्षा थप्नुहोस्</button>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="panel" data-panel="profile">
+      <div class="card">
+        <h3>⚙️ Login settings · लगइन सेटिङ</h3>
+        <div class="field"><label>Current email · हालको इमेल</label><input id="prCurEmail" disabled></div>
+      </div>
+      <div class="card">
+        <h3>✉️ Change email · इमेल परिवर्तन</h3>
+        <div class="field"><label>New email · नयाँ इमेल</label><input type="email" id="prNewEmail" autocomplete="email"></div>
+        <button class="btn btn-p btn-sm" id="prEmailBtn">Update email · अपडेट</button>
+        <div class="err-msg" id="prEmailErr"></div>
+        <div class="note" id="prEmailOk" style="display:none;background:#dcfce7;border-color:#86efac;color:#166534;margin-top:12px"></div>
+      </div>
+      <div class="card">
+        <h3>🔑 Change password · पासवर्ड परिवर्तन</h3>
+        <div class="field"><label>New password (min 8) · नयाँ पासवर्ड</label><input type="password" id="prNewPass" autocomplete="new-password"></div>
+        <div class="field"><label>Confirm new password · पुष्टि गर्नुहोस्</label><input type="password" id="prNewPass2" autocomplete="new-password"></div>
+        <button class="btn btn-p btn-sm" id="prPassBtn">Update password · अपडेट</button>
+        <div class="err-msg" id="prPassErr"></div>
+        <div class="note" id="prPassOk" style="display:none;background:#dcfce7;border-color:#86efac;color:#166534;margin-top:12px"></div>
+      </div>
+    </div>
+
+    <!-- PORTFOLIO -->
+    <div class="panel" data-panel="portfolio">
+      <div class="card">
+        <h3>📷 Add new photo · नयाँ फोटो</h3>
+        <div class="field"><label>Photo (after / final) · फोटो</label><input type="file" id="pFile" accept="image/*"><img class="imgprev" id="pPrev"></div>
+        <div class="field"><label>Before photo (optional) · अघिको फोटो (वैकल्पिक)</label><input type="file" id="pBefore" accept="image/*"></div>
+        <div class="field"><label>Category · कोटि</label>
+          <select id="pCat">
+            <option value="flex">Flex Prints · फ्लेक्स</option>
+            <option value="banner">Banners · ब्यानर</option>
+            <option value="tshirt">T-Shirts · टि-शर्ट</option>
+            <option value="logo">Logo Designs · लोगो</option>
+            <option value="stamp">Stamps · स्ट्याम्प</option>
+            <option value="board">Boards · बोर्ड</option>
+            <option value="custom">Custom · कस्टम</option>
+          </select>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Title (English)</label><input id="pTitleEn"></div>
+          <div class="field"><label>शीर्षक (नेपाली)</label><input id="pTitleNe" class="ne-input"></div>
+        </div>
+        <button class="btn btn-p" id="pUpload">Upload photo · अपलोड</button>
+        <div class="err-msg" id="pErr"></div>
+      </div>
+      <div class="card">
+        <h3>🖼️ Current photos · हालका फोटोहरू</h3>
+        <div class="plist" id="pList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVE BAR -->
+  <div class="savebar" id="savebar">
+    <div class="wrap">
+      <span class="status" id="saveStatus">Unsaved changes · सेभ गर्न बाँकी</span>
+      <button class="btn btn-p" id="saveBtn">💾 Save · सेभ गर्नुहोस्</button>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const DEMO = !window.NKA_CONFIG || !NKA_CONFIG.SUPABASE_URL || NKA_CONFIG.SUPABASE_URL.includes('YOUR-PROJECT');
+function demoEmail(){ try{return sessionStorage.getItem('nka_demo_email')||'newkarkiart88@gmail.com'}catch(e){return 'newkarkiart88@gmail.com'} }
+function demoPass(){ try{return sessionStorage.getItem('nka_demo_pass')||'BalkrishnaKarkiArt@2083'}catch(e){return 'BalkrishnaKarkiArt@2083'} }
+const sb = DEMO ? null : supabase.createClient(NKA_CONFIG.SUPABASE_URL, NKA_CONFIG.SUPABASE_ANON_KEY);
+let DATA = null, dirty = false;
+
+/* ---------- DEMO DATA (mirrors schema.sql seed) ---------- */
+const DEMO_DATA = {
+  brand:{name:'New Karki Art',logo_url:'',tagline_en:'Printing & Design',tagline_ne:'प्रिन्टिङ तथा डिजाइन'},
+  hero:{headline_en:'Transforming Ideas Into <span class="grad">Stunning Prints</span> & Designs',headline_ne:'विचारलाई <span class="grad">आकर्षक प्रिन्ट</span> तथा डिजाइनमा रूपान्तरण',sub_en:'Your trusted partner for professional printing, branding, advertising materials, custom merchandise, and creative design solutions.',sub_ne:'व्यावसायिक प्रिन्टिङ, ब्रान्डिङ, विज्ञापन सामग्री, कस्टम उत्पादन तथा सिर्जनात्मक डिजाइन समाधानको लागि तपाईंको भरपर्दो साझेदार।'},
+  about:{en:'New Karki Art is a professional printing and design company located in Khadichaur, Sindhupalchok. We provide high-quality printing, branding, advertising materials, custom merchandise, and creative design services for businesses and individuals. Our goal is to deliver quality work with creativity, professionalism, and customer satisfaction.',ne:'न्यु कार्की आर्ट खाडीचौर, सिन्धुपाल्चोकमा अवस्थित एक व्यावसायिक प्रिन्टिङ तथा डिजाइन कम्पनी हो। हामी उच्च गुणस्तरीय प्रिन्टिङ, ब्रान्डिङ, विज्ञापन सामग्री, कस्टम उत्पादन तथा सिर्जनात्मक डिजाइन सेवा प्रदान गर्दछौं। हाम्रो उद्देश्य गुणस्तरीय सेवा र ग्राहक सन्तुष्टि सुनिश्चित गर्नु हो।'},
+  contact:{phone:'9860655490',whatsapp:'9860655490',email:'newkarkiart88@gmail.com',hours_en:'All week · 7:00 AM – 7:00 PM',hours_ne:'हरेक दिन · बिहान ७ – बेलुका ७',address_en:'Khadichaur, Sindhupalchok, Nepal',address_ne:'खाडीचौर, सिन्धुपाल्चोक, नेपाल',lat:'27.751741',lng:'85.823256'},
+  stats:[{num:'1000',suf:'+',en:'Projects Completed',ne:'पूरा भएका परियोजना'},{num:'500',suf:'+',en:'Happy Customers',ne:'सन्तुष्ट ग्राहक'},{num:'7',suf:'+',en:'Years of Service',ne:'सेवाका वर्ष'},{num:'100',suf:'%',en:'Satisfaction Goal',ne:'सन्तुष्टि लक्ष्य'}],
+  services:{
+    print:[{en:'Flex Printing',ne:'फ्लेक्स प्रिन्टिङ'},{en:'Banner Printing',ne:'ब्यानर प्रिन्टिङ'},{en:'Board Printing',ne:'बोर्ड प्रिन्टिङ'},{en:'Cup Printing',ne:'कप प्रिन्टिङ'},{en:'Mug Printing',ne:'मग प्रिन्टिङ'},{en:'T-Shirt Printing',ne:'टि-शर्ट प्रिन्टिङ'},{en:'Sticker Printing',ne:'स्टिकर प्रिन्टिङ'},{en:'Invitation Cards',ne:'निमन्त्रणा कार्ड'},{en:'ID Cards',ne:'आईडी कार्ड'}],
+    design:[{en:'Logo Design',ne:'लोगो डिजाइन'},{en:'Business Card Design',ne:'भिजिटिङ कार्ड डिजाइन'},{en:'Poster Design',ne:'पोस्टर डिजाइन'},{en:'Social Media Graphics',ne:'सोसल मिडिया ग्राफिक्स'},{en:'Branding Design',ne:'ब्रान्डिङ डिजाइन'},{en:'Packaging Design',ne:'प्याकेजिङ डिजाइन'}],
+    business:[{en:'Rubber Stamps',ne:'रबर स्ट्याम्प'},{en:'Bills & Invoices',ne:'बिल तथा इन्भ्वाइस'},{en:'Receipt Books',ne:'रसिद बुक'},{en:'Letterheads',ne:'लेटरहेड'},{en:'Company Seals',ne:'कम्पनी सिल'}],
+    custom:[{en:'Handwritten Boards',ne:'हस्तलिखित बोर्ड'},{en:'Handwritten Signboards',ne:'हस्तलिखित साइनबोर्ड'},{en:'Custom Artwork',ne:'कस्टम आर्टवर्क'},{en:'Personalized Printing',ne:'व्यक्तिगत प्रिन्टिङ'}]
+  },
+  hero_card:[{en:'Flex & Banner Printing',ne:'फ्लेक्स र ब्यानर प्रिन्ट',tag:'HD'},{en:'Logo & Branding',ne:'लोगो र ब्रान्डिङ',tag:'Custom'},{en:'T-Shirt & Mug Print',ne:'टि-शर्ट र मग प्रिन्ट',tag:'★'},{en:'Stamps & Invoices',ne:'स्ट्याम्प र बिल',tag:'Fast'}],
+  why_feats:[{en:'Fast Delivery',ne:'छिटो डेलिभरी'},{en:'Affordable Pricing',ne:'किफायती मूल्य'},{en:'High Quality Materials',ne:'उच्च गुणस्तर सामग्री'},{en:'Professional Service',ne:'व्यावसायिक सेवा'}],
+  testimonials:[{en:'Excellent printing quality and professional service.',ne:'उत्कृष्ट प्रिन्टिङ गुणस्तर र व्यावसायिक सेवा।',who:'Ramesh K.'},{en:'Best design and printing service in the area.',ne:'क्षेत्रकै उत्कृष्ट डिजाइन तथा प्रिन्टिङ सेवा।',who:'Sita Tamang'},{en:'Highly recommended for banners, logos, and custom printing.',ne:'ब्यानर, लोगो र कस्टम प्रिन्टिङका लागि अत्यधिक सिफारिस।',who:'Bikash Shrestha'}]
+};
+let DEMO_PORTFOLIO = [
+  {id:'demo-1',cat:'flex',title_en:'Shop Flex Board',title_ne:'पसल फ्लेक्स बोर्ड',img_url:'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=200&q=60'},
+  {id:'demo-2',cat:'tshirt',title_en:'Custom T-Shirt',title_ne:'कस्टम टि-शर्ट',img_url:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=200&q=60'},
+  {id:'demo-3',cat:'logo',title_en:'Brand Logo',title_ne:'ब्रान्ड लोगो',img_url:'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=200&q=60'}
+];
+
+/* ---------- AUTH ---------- */
+const loginView=document.getElementById('loginView'), adminView=document.getElementById('adminView');
+async function checkAuth(){
+  if(DEMO){
+    document.getElementById('demoHint').style.display='block';
+    document.getElementById('demoBanner').style.display='block';
+    if(sessionStorage.getItem('nka_demo')==='1'){ loginView.style.display='none'; adminView.style.display='block'; await loadAll(); }
+    else { loginView.style.display='grid'; adminView.style.display='none'; }
+    return;
+  }
+  const {data:{session}} = await sb.auth.getSession();
+  if(session){ loginView.style.display='none'; adminView.style.display='block'; await loadAll(); }
+  else { loginView.style.display='grid'; adminView.style.display='none'; }
+}
+document.getElementById('loginBtn').onclick = async ()=>{
+  const btn=document.getElementById('loginBtn'), err=document.getElementById('loginErr');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>'; err.style.display='none';
+  if(DEMO){
+    await new Promise(r=>setTimeout(r,400));
+    btn.disabled=false; btn.textContent='Login · लगइन';
+    const em=document.getElementById('loginEmail').value.trim().toLowerCase();
+    if(em===demoEmail().toLowerCase() && document.getElementById('loginPass').value===demoPass()){ sessionStorage.setItem('nka_demo','1'); checkAuth(); }
+    else { err.textContent='Wrong email or password. · गलत इमेल वा पासवर्ड।'; err.style.display='block'; }
+    return;
+  }
+  const {error} = await sb.auth.signInWithPassword({
+    email:document.getElementById('loginEmail').value.trim(),
+    password:document.getElementById('loginPass').value
+  });
+  btn.disabled=false; btn.textContent='Login · लगइन';
+  if(error){ err.textContent='Login failed: '+error.message; err.style.display='block'; return; }
+  checkAuth();
+};
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginBtn').click()});
+document.getElementById('passToggle').onclick=()=>{
+  const p=document.getElementById('loginPass'), show=p.type==='password';
+  p.type=show?'text':'password';
+  document.getElementById('passToggle').setAttribute('aria-label',show?'Hide password':'Show password');
+};
+document.getElementById('logoutBtn').onclick = async ()=>{ if(dirty && !confirm('You have unsaved changes. Logout anyway? · सेभ नगरिएका परिवर्तनहरू छन्।')) return; if(DEMO){sessionStorage.removeItem('nka_demo');} else {await sb.auth.signOut();} location.reload(); };
+
+/* ---------- DRAWER NAV ---------- */
+const drawer=document.getElementById('drawer'), dOverlay=document.getElementById('drawerOverlay'), drawerBtn=document.getElementById('drawerBtn');
+function drawerOpen(){ return drawer.classList.contains('open'); }
+function setDrawer(open){
+  drawer.classList.toggle('open',open);
+  dOverlay.classList.toggle('show',open);
+  drawerBtn.setAttribute('aria-expanded',String(open));
+}
+drawerBtn.onclick=()=>setDrawer(!drawerOpen());
+dOverlay.onclick=()=>setDrawer(false);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&drawerOpen()) setDrawer(false); });
+
+document.querySelectorAll('#drawer [data-tab]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#drawer [data-tab]').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.querySelector('[data-panel="'+b.dataset.tab+'"]').classList.add('active');
+  const lbl=drawerBtn.querySelector('[data-current]'); if(lbl) lbl.textContent=b.textContent.trim();
+  if(window.innerWidth<980) setDrawer(false);
+  window.scrollTo({top:0});
+});
+
+/* swipe right from left/middle opens; swipe left closes */
+let _sx=0,_sy=0,_swipeOk=false;
+document.addEventListener('touchstart',e=>{
+  const t=e.changedTouches[0]; _sx=t.clientX; _sy=t.clientY;
+  _swipeOk=!e.target.closest('input,textarea,select');
+},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(!_swipeOk||window.innerWidth>=980) return;
+  const t=e.changedTouches[0], dx=t.clientX-_sx, dy=t.clientY-_sy;
+  if(Math.abs(dy)>80||Math.abs(dx)<70) return;
+  if(dx>0&&!drawerOpen()&&_sx<window.innerWidth*0.66) setDrawer(true);
+  else if(dx<0&&drawerOpen()) setDrawer(false);
+},{passive:true});
+
+/* ---------- LOAD ---------- */
+async function loadAll(){
+  const lb=document.getElementById('loadingBar'); lb.style.display='block';
+  try{
+    if(DEMO){ DATA = JSON.parse(JSON.stringify(DEMO_DATA)); fillForms(); loadPortfolio(); fillProfile(); return; }
+    const {data,error} = await sb.from('site_content').select('data').eq('id',1).single();
+    if(error){ alert('Could not load content: '+error.message); return; }
+    DATA = data.data || {};
+    fillForms(); loadPortfolio(); fillProfile();
+  } finally { lb.style.display='none'; }
+}
+function v(id){ return document.getElementById(id).value.trim(); }
+function set(id,val){ document.getElementById(id).value = val ?? ''; }
+function fillForms(){
+  const d=DATA;
+  set('bName',d.brand?.name ?? 'New Karki Art');
+  set('bTagEn',d.brand?.tagline_en ?? 'Printing & Design'); set('bTagNe',d.brand?.tagline_ne ?? 'प्रिन्टिङ तथा डिजाइन');
+  const lp=document.getElementById('bLogoPrev');
+  if(d.brand?.logo_url){ lp.src=d.brand.logo_url; lp.style.display='block'; } else { lp.style.display='none'; }
+  set('aboutEn',d.about?.en); set('aboutNe',d.about?.ne);
+  set('cPhone',d.contact?.phone); set('cWa',d.contact?.whatsapp); set('cEmail',d.contact?.email);
+  set('cHoursEn',d.contact?.hours_en); set('cHoursNe',d.contact?.hours_ne);
+  set('cAddrEn',d.contact?.address_en); set('cAddrNe',d.contact?.address_ne);
+  set('cLat',d.contact?.lat); set('cLng',d.contact?.lng);
+  set('hHeadEn',d.hero?.headline_en); set('hHeadNe',d.hero?.headline_ne);
+  set('hSubEn',d.hero?.sub_en); set('hSubNe',d.hero?.sub_ne);
+  if(!Array.isArray(DATA.hero_card)) DATA.hero_card=JSON.parse(JSON.stringify(DEMO_DATA.hero_card));
+  renderServices(); renderFeats(); renderStats(); renderHeroCard(); renderTst();
+}
+
+/* ---------- SERVICES ---------- */
+const SVC_GROUPS=['print','design','business','custom'];
+function renderServices(){
+  SVC_GROUPS.forEach(g=>{
+    const list=document.getElementById('svcList-'+g); if(!list) return;
+    list.innerHTML=((DATA.services||{})[g]||[]).map((s,i)=>`
+      <div class="row2" style="align-items:end;margin-bottom:10px">
+        <div class="field" style="margin-bottom:0"><label>English</label><input value="${esc(s.en)}" oninput="DATA.services.${g}[${i}].en=this.value;markDirty()"></div>
+        <div style="display:flex;gap:8px;align-items:end">
+          <div class="field" style="margin-bottom:0;flex:1"><label>नेपाली</label><input class="ne-input" value="${esc(s.ne)}" oninput="DATA.services.${g}[${i}].ne=this.value;markDirty()"></div>
+          <button class="btn btn-d btn-sm" style="height:46px" onclick="delSvc('${g}',${i})">✕</button>
+        </div>
+      </div>`).join('');
+  });
+}
+function delSvc(g,i){ DATA.services[g].splice(i,1); renderServices(); markDirty(); }
+function addSvc(g){ DATA.services=DATA.services||{}; (DATA.services[g]=DATA.services[g]||[]).push({en:'',ne:''}); renderServices(); markDirty(); }
+
+/* ---------- WHY FEATURE BADGES ---------- */
+function renderFeats(){
+  const list=document.getElementById('featsList'); if(!list) return;
+  list.innerHTML=(DATA.why_feats||[]).map((f,i)=>`
+    <div class="row2" style="align-items:end;margin-bottom:10px">
+      <div class="field" style="margin-bottom:0"><label>English</label><input value="${esc(f.en)}" oninput="DATA.why_feats[${i}].en=this.value;markDirty()"></div>
+      <div style="display:flex;gap:8px;align-items:end">
+        <div class="field" style="margin-bottom:0;flex:1"><label>नेपाली</label><input class="ne-input" value="${esc(f.ne)}" oninput="DATA.why_feats[${i}].ne=this.value;markDirty()"></div>
+        <button class="btn btn-d btn-sm" style="height:46px" onclick="delFeat(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+function delFeat(i){ DATA.why_feats.splice(i,1); renderFeats(); markDirty(); }
+document.getElementById('addFeat').onclick=()=>{ (DATA.why_feats=DATA.why_feats||[]).push({en:'',ne:''}); renderFeats(); markDirty(); };
+
+/* ---------- HERO CARD ROWS ---------- */
+function renderHeroCard(){
+  const list=document.getElementById('hcList'); if(!list) return;
+  list.innerHTML=(DATA.hero_card||[]).map((r,i)=>`
+    <div class="team-item">
+      <div class="item-head"><b>Row ${i+1}</b><button class="btn btn-d btn-sm" onclick="delHc(${i})">Remove</button></div>
+      <div class="row2">
+        <div class="field"><label>Text (English)</label><input value="${esc(r.en)}" oninput="DATA.hero_card[${i}].en=this.value;markDirty()"></div>
+        <div class="field"><label>पाठ (नेपाली)</label><input class="ne-input" value="${esc(r.ne)}" oninput="DATA.hero_card[${i}].ne=this.value;markDirty()"></div>
+      </div>
+      <div class="field"><label>Tag (e.g. HD, Fast, ★) · ट्याग</label><input value="${esc(r.tag)}" oninput="DATA.hero_card[${i}].tag=this.value;markDirty()"></div>
+    </div>`).join('');
+}
+function delHc(i){ DATA.hero_card.splice(i,1); renderHeroCard(); markDirty(); }
+document.getElementById('addHc').onclick=()=>{ (DATA.hero_card=DATA.hero_card||[]).push({en:'',ne:'',tag:''}); renderHeroCard(); markDirty(); };
+
+/* ---------- STATS ---------- */
+function renderStats(){
+  const list=document.getElementById('statsList');
+  list.innerHTML=(DATA.stats||[]).map((s,i)=>`
+    <div class="team-item">
+      <div class="item-head"><b>Stat ${i+1}</b><button class="btn btn-d btn-sm" onclick="delStat(${i})">Remove</button></div>
+      <div class="row2">
+        <div class="field"><label>Number · संख्या</label><input inputmode="numeric" value="${esc(s.num)}" oninput="DATA.stats[${i}].num=this.value;markDirty()"></div>
+        <div class="field"><label>Suffix (+ or %)</label><input value="${esc(s.suf)}" oninput="DATA.stats[${i}].suf=this.value;markDirty()"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Label (English)</label><input value="${esc(s.en)}" oninput="DATA.stats[${i}].en=this.value;markDirty()"></div>
+        <div class="field"><label>लेबल (नेपाली)</label><input class="ne-input" value="${esc(s.ne)}" oninput="DATA.stats[${i}].ne=this.value;markDirty()"></div>
+      </div>
+    </div>`).join('');
+}
+function delStat(i){ DATA.stats.splice(i,1); renderStats(); markDirty(); }
+document.getElementById('addStat').onclick=()=>{ (DATA.stats=DATA.stats||[]).push({num:'',suf:'+',en:'',ne:''}); renderStats(); markDirty(); };
+
+/* ---------- TESTIMONIALS ---------- */
+function renderTst(){
+  const list=document.getElementById('tstList');
+  list.innerHTML=(DATA.testimonials||[]).map((t,i)=>`
+    <div class="tst-item">
+      <div class="item-head"><b>Review ${i+1}</b><button class="btn btn-d btn-sm" onclick="delTst(${i})">Remove</button></div>
+      <div class="field"><label>Review (English)</label><input value="${esc(t.en)}" oninput="DATA.testimonials[${i}].en=this.value;markDirty()"></div>
+      <div class="field"><label>समीक्षा (नेपाली)</label><input class="ne-input" value="${esc(t.ne)}" oninput="DATA.testimonials[${i}].ne=this.value;markDirty()"></div>
+      <div class="field"><label>Customer name · ग्राहकको नाम</label><input value="${esc(t.who)}" oninput="DATA.testimonials[${i}].who=this.value;markDirty()"></div>
+    </div>`).join('');
+}
+function delTst(i){ DATA.testimonials.splice(i,1); renderTst(); markDirty(); }
+document.getElementById('addTst').onclick=()=>{ (DATA.testimonials=DATA.testimonials||[]).push({en:'',ne:'',who:''}); renderTst(); markDirty(); };
+
+function esc(s){ return (s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+/* ---------- BRAND LOGO ---------- */
+let pendingLogo=null;
+document.getElementById('bLogoFile').addEventListener('change',e=>{
+  pendingLogo=e.target.files[0]||null;
+  const lp=document.getElementById('bLogoPrev');
+  if(pendingLogo){ lp.src=URL.createObjectURL(pendingLogo); lp.style.display='block'; markDirty(); }
+});
+document.getElementById('bLogoRemove').onclick=()=>{
+  pendingLogo=null; document.getElementById('bLogoFile').value='';
+  DATA.brand=DATA.brand||{}; DATA.brand.logo_url='';
+  document.getElementById('bLogoPrev').style.display='none';
+  markDirty();
+};
+
+/* ---------- DIRTY / SAVE ---------- */
+function markDirty(){ dirty=true; document.getElementById('savebar').classList.add('show');
+  const st=document.getElementById('saveStatus'); st.className='status'; st.textContent='Unsaved changes · सेभ गर्न बाँकी'; }
+['bName','bTagEn','bTagNe','aboutEn','aboutNe','cPhone','cWa','cEmail','cHoursEn','cHoursNe','cAddrEn','cAddrNe','cLat','cLng','hHeadEn','hHeadNe','hSubEn','hSubNe']
+  .forEach(id=>document.getElementById(id).addEventListener('input',markDirty));
+
+document.getElementById('saveBtn').onclick = async ()=>{
+  // pull simple fields back into DATA
+  DATA.brand=DATA.brand||{};
+  if(pendingLogo){
+    const f=await compressImage(pendingLogo);
+    if(DEMO){ DATA.brand.logo_url=URL.createObjectURL(f); }
+    else{
+      const ext=(f.name.split('.').pop()||'jpg').toLowerCase();
+      const path='branding-'+Date.now()+'.'+ext;
+      const {error:upErr}=await sb.storage.from('portfolio').upload(path,f,{contentType:f.type});
+      if(upErr){ const st=document.getElementById('saveStatus'); st.className='status err'; st.textContent='Logo upload failed: '+upErr.message; return; }
+      DATA.brand.logo_url=sb.storage.from('portfolio').getPublicUrl(path).data.publicUrl;
+    }
+    pendingLogo=null; document.getElementById('bLogoFile').value='';
+  }
+  DATA.brand.name=v('bName')||'New Karki Art';
+  DATA.brand.tagline_en=v('bTagEn'); DATA.brand.tagline_ne=v('bTagNe');
+  DATA.about={en:v('aboutEn'),ne:v('aboutNe')};
+  DATA.contact={phone:v('cPhone'),whatsapp:v('cWa'),email:v('cEmail'),hours_en:v('cHoursEn'),hours_ne:v('cHoursNe'),address_en:v('cAddrEn'),address_ne:v('cAddrNe'),lat:v('cLat'),lng:v('cLng')};
+  DATA.hero={headline_en:v('hHeadEn'),headline_ne:v('hHeadNe'),sub_en:v('hSubEn'),sub_ne:v('hSubNe')};
+  const btn=document.getElementById('saveBtn'), st=document.getElementById('saveStatus');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span> Saving…';
+  if(DEMO){
+    await new Promise(r=>setTimeout(r,500));
+    btn.disabled=false; btn.innerHTML='💾 Save · सेभ गर्नुहोस्';
+    st.className='status ok'; st.textContent='✓ Demo: looks saved, but NOT stored anywhere'; dirty=false;
+    setTimeout(()=>{ if(!dirty) document.getElementById('savebar').classList.remove('show'); },2500);
+    return;
+  }
+  const {error} = await sb.from('site_content').update({data:DATA,updated_at:new Date().toISOString()}).eq('id',1);
+  btn.disabled=false; btn.innerHTML='💾 Save · सेभ गर्नुहोस्';
+  if(error){ st.className='status err'; st.textContent='Save failed: '+error.message; return; }
+  st.className='status ok'; st.textContent='✓ Saved! Website updated · सेभ भयो!'; dirty=false;
+  setTimeout(()=>{ if(!dirty) document.getElementById('savebar').classList.remove('show'); },2500);
+};
+window.addEventListener('beforeunload',e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; }});
+
+/* ---------- IMAGE COMPRESSION (faster uploads + faster site) ---------- */
+async function compressImage(file){
+  if(!file || !file.type.startsWith('image/') || file.type==='image/gif') return file;
+  try{
+    const bmp = await createImageBitmap(file);
+    const max = 1600;
+    let w = bmp.width, h = bmp.height;
+    if(Math.max(w,h) > max){ const s = max/Math.max(w,h); w = Math.round(w*s); h = Math.round(h*s); }
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(bmp, 0, 0, w, h);
+    const blob = await new Promise(r=>c.toBlob(r,'image/jpeg',0.82));
+    if(blob && blob.size < file.size) return new File([blob], file.name.replace(/\.\w+$/,'')+'.jpg', {type:'image/jpeg'});
+  }catch(e){ /* canvas unsupported -> original */ }
+  return file;
+}
+
+/* ---------- PORTFOLIO ---------- */
+async function uploadToStorage(file, prefix){
+  const f = await compressImage(file);
+  if(DEMO) return URL.createObjectURL(f);
+  const ext=(f.name.split('.').pop()||'jpg').toLowerCase();
+  const path=(prefix||'')+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
+  const {error}=await sb.storage.from('portfolio').upload(path,f,{contentType:f.type});
+  if(error) throw error;
+  return sb.storage.from('portfolio').getPublicUrl(path).data.publicUrl;
+}
+const CATLABEL={flex:'Flex',banner:'Banner',tshirt:'T-Shirt',logo:'Logo',stamp:'Stamp',board:'Board',custom:'Custom'};
+let PHOTOS = [];
+function catOptions(sel){ return Object.keys(CATLABEL).map(c=>`<option value="${c}" ${c===sel?'selected':''}>${CATLABEL[c]}</option>`).join(''); }
+function renderPhotos(){
+  const list=document.getElementById('pList');
+  if(!PHOTOS.length){
+    list.innerHTML = DEMO
+      ? '<small style="color:var(--muted)">No photos yet (demo). Try uploading one — it shows here but is not stored. · डेमो मोड</small>'
+      : '<small style="color:var(--muted)">No photos yet — the website will show its built-in sample photos until you add some. · फोटो थप्नुभएपछि वेबसाइटमा देखिनेछ।</small>';
+    return;
+  }
+  list.innerHTML=PHOTOS.map((p,i)=>`
+    <div>
+      <div class="pitem">
+        <img src="${p.img_url}" alt="">
+        <div class="pmeta"><b>${esc(p.title_en)}</b><small>${CATLABEL[p.cat]||p.cat}${p.before_url?' · B/A':''}</small></div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <button class="btn btn-s btn-sm" style="padding:4px 10px" onclick="movePhoto(${i},-1)" aria-label="Move up" ${i===0?'disabled':''}>▲</button>
+          <button class="btn btn-s btn-sm" style="padding:4px 10px" onclick="movePhoto(${i},1)" aria-label="Move down" ${i===PHOTOS.length-1?'disabled':''}>▼</button>
+        </div>
+        <button class="btn btn-s btn-sm" onclick="toggleEdit(${i})">Edit</button>
+        <button class="btn btn-d btn-sm" onclick="delPhoto(${i})">Delete</button>
+      </div>
+      <div class="card" id="editBox${i}" style="display:none;margin:8px 0 4px;background:var(--bg)">
+        <div class="field"><label>Change photo (optional) · फोटो बदल्नुहोस्</label><input type="file" id="eFile${i}" accept="image/*"></div>
+        <div class="field"><label>${p.before_url?'Change':'Add'} before photo (optional) · अघिको फोटो</label><input type="file" id="eBefore${i}" accept="image/*">${p.before_url?'<button type="button" class="btn btn-d btn-sm" style="margin-top:8px" onclick="removeBefore('+i+')">Remove before photo</button>':''}</div>
+        <div class="field"><label>Category · कोटि</label><select id="eCat${i}">${catOptions(p.cat)}</select></div>
+        <div class="row2">
+          <div class="field"><label>Title (English)</label><input id="eTitleEn${i}" value="${esc(p.title_en)}"></div>
+          <div class="field"><label>शीर्षक (नेपाली)</label><input class="ne-input" id="eTitleNe${i}" value="${esc(p.title_ne)}"></div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-p btn-sm" id="eSave${i}" onclick="saveEdit(${i})">Save changes · सेभ</button>
+          <button class="btn btn-s btn-sm" onclick="toggleEdit(${i})">Cancel</button>
+        </div>
+        <div class="err-msg" id="eErr${i}"></div>
+      </div>
+    </div>`).join('');
+}
+async function removeBefore(i){
+  const p=PHOTOS[i];
+  if(!confirm('Remove the before photo? · अघिको फोटो हटाउने?')) return;
+  const old=p.before_url;
+  p.before_url=null;
+  if(!DEMO){
+    await sb.from('portfolio').update({before_url:null}).eq('id',p.id);
+    if(old&&old.includes('/portfolio/')) await sb.storage.from('portfolio').remove([old.split('/').pop()]);
+  }
+  renderPhotos();
+}
+async function movePhoto(i,dir){
+  const j=i+dir; if(j<0||j>=PHOTOS.length) return;
+  [PHOTOS[i],PHOTOS[j]]=[PHOTOS[j],PHOTOS[i]];
+  renderPhotos();
+  if(!DEMO){
+    try{ await Promise.all(PHOTOS.map((p,idx)=>sb.from('portfolio').update({sort_order:idx}).eq('id',p.id))); }
+    catch(e){ alert('Reorder failed: '+e.message); loadPortfolio(); }
+  }
+}
+function toggleEdit(i){ const b=document.getElementById('editBox'+i); b.style.display=b.style.display==='none'?'block':'none'; }
+async function saveEdit(i){
+  const p=PHOTOS[i];
+  const titleEn=document.getElementById('eTitleEn'+i).value.trim();
+  const titleNe=document.getElementById('eTitleNe'+i).value.trim();
+  const cat=document.getElementById('eCat'+i).value;
+  let file=document.getElementById('eFile'+i).files[0];
+  const err=document.getElementById('eErr'+i); err.style.display='none';
+  if(!titleEn||!titleNe){ err.textContent='Please fill both titles · दुवै शीर्षक भर्नुहोस्'; err.style.display='block'; return; }
+  if(file && file.size>5*1024*1024){ err.textContent='Photo too large (max 5 MB)'; err.style.display='block'; return; }
+  const btn=document.getElementById('eSave'+i);
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>';
+  if(file) file = await compressImage(file);
+  const beforeFile=document.getElementById('eBefore'+i).files[0]||null;
+  if(DEMO){
+    await new Promise(r=>setTimeout(r,400));
+    Object.assign(p,{cat,title_en:titleEn,title_ne:titleNe});
+    if(file) p.img_url=URL.createObjectURL(file);
+    if(beforeFile) p.before_url=URL.createObjectURL(beforeFile);
+    renderPhotos(); return;
+  }
+  let img_url=p.img_url, before_url=p.before_url||null, oldFile=null;
+  try{
+    if(file){ oldFile=p.img_url.split('/').pop(); img_url=await uploadToStorage(file,''); }
+    if(beforeFile) before_url=await uploadToStorage(beforeFile,'before-');
+  }catch(upErr){
+    btn.disabled=false; btn.textContent='Save changes · सेभ';
+    err.textContent='Upload failed: '+upErr.message; err.style.display='block'; return;
+  }
+  const {error}=await sb.from('portfolio').update({cat,title_en:titleEn,title_ne:titleNe,img_url,before_url}).eq('id',p.id);
+  btn.disabled=false; btn.textContent='Save changes · सेभ';
+  if(error){ err.textContent='Save failed: '+error.message; err.style.display='block'; return; }
+  if(oldFile) await sb.storage.from('portfolio').remove([oldFile]);
+  loadPortfolio();
+}
+async function loadPortfolio(){
+  if(DEMO){ PHOTOS=DEMO_PORTFOLIO; renderPhotos(); return; }
+  const {data,error} = await sb.from('portfolio').select('*').order('sort_order',{ascending:true}).order('created_at',{ascending:false});
+  if(error){ document.getElementById('pList').innerHTML='<small>Could not load: '+error.message+'</small>'; return; }
+  PHOTOS=data; renderPhotos();
+}
+document.getElementById('pFile').addEventListener('change',e=>{
+  const f=e.target.files[0], img=document.getElementById('pPrev');
+  if(f){ img.src=URL.createObjectURL(f); img.style.display='block'; } else img.style.display='none';
+});
+document.getElementById('pUpload').onclick = async ()=>{
+  let file=document.getElementById('pFile').files[0];
+  const err=document.getElementById('pErr'); err.style.display='none';
+  const titleEn=v('pTitleEn'), titleNe=v('pTitleNe');
+  if(!file){ err.textContent='Please choose a photo · कृपया फोटो छान्नुहोस्'; err.style.display='block'; return; }
+  if(!titleEn||!titleNe){ err.textContent='Please fill both titles · दुवै शीर्षक भर्नुहोस्'; err.style.display='block'; return; }
+  if(file.size > 5*1024*1024){ err.textContent='Photo too large (max 5 MB) · फोटो धेरै ठूलो भयो'; err.style.display='block'; return; }
+  const btn=document.getElementById('pUpload');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span> Uploading…';
+  const beforeFile=document.getElementById('pBefore').files[0]||null;
+  let publicUrl, beforeUrl=null;
+  try{
+    publicUrl = await uploadToStorage(file,'');
+    if(beforeFile) beforeUrl = await uploadToStorage(beforeFile,'before-');
+  }catch(upErr){
+    btn.disabled=false; btn.textContent='Upload photo · अपलोड';
+    err.textContent='Upload failed: '+upErr.message; err.style.display='block'; return;
+  }
+  if(DEMO){
+    DEMO_PORTFOLIO.unshift({id:'demo-'+Date.now(),cat:document.getElementById('pCat').value,title_en:titleEn,title_ne:titleNe,img_url:publicUrl,before_url:beforeUrl});
+    btn.disabled=false; btn.textContent='Upload photo · अपलोड';
+    document.getElementById('pFile').value=''; document.getElementById('pBefore').value=''; document.getElementById('pPrev').style.display='none';
+    set('pTitleEn',''); set('pTitleNe','');
+    loadPortfolio();
+    return;
+  }
+  const {error:insErr} = await sb.from('portfolio').insert({cat:document.getElementById('pCat').value,title_en:titleEn,title_ne:titleNe,img_url:publicUrl,before_url:beforeUrl});
+  btn.disabled=false; btn.textContent='Upload photo · अपलोड';
+  if(insErr){ err.textContent='Save failed: '+insErr.message; err.style.display='block'; return; }
+  document.getElementById('pFile').value=''; document.getElementById('pPrev').style.display='none';
+  set('pTitleEn',''); set('pTitleNe','');
+  loadPortfolio();
+};
+async function delPhoto(i){
+  if(!confirm('Delete this photo? · यो फोटो हटाउने?')) return;
+  const p=PHOTOS[i];
+  if(DEMO){ DEMO_PORTFOLIO=DEMO_PORTFOLIO.filter(x=>x.id!==p.id); PHOTOS=DEMO_PORTFOLIO; renderPhotos(); return; }
+  await sb.from('portfolio').delete().eq('id',p.id);
+  await sb.storage.from('portfolio').remove([p.img_url.split('/').pop()]);
+  loadPortfolio();
+}
+
+/* ---------- PROFILE: change email / password ---------- */
+async function fillProfile(){
+  let em='';
+  if(DEMO) em=demoEmail();
+  else{ const {data:{user}} = await sb.auth.getUser(); em=user?user.email:''; }
+  document.getElementById('prCurEmail').value=em;
+}
+document.getElementById('prEmailBtn').onclick = async ()=>{
+  const errEl=document.getElementById('prEmailErr'), okEl=document.getElementById('prEmailOk');
+  errEl.style.display='none'; okEl.style.display='none';
+  const em=document.getElementById('prNewEmail').value.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ errEl.textContent='Enter a valid email · मान्य इमेल लेख्नुहोस्'; errEl.style.display='block'; return; }
+  const btn=document.getElementById('prEmailBtn'); btn.disabled=true; btn.innerHTML='<span class="spin"></span>';
+  if(DEMO){
+    await new Promise(r=>setTimeout(r,400));
+    try{ sessionStorage.setItem('nka_demo_email',em); }catch(e){}
+    btn.disabled=false; btn.textContent='Update email · अपडेट';
+    okEl.textContent='Demo: email changed for this session to '+em; okEl.style.display='block';
+    fillProfile(); return;
+  }
+  const {error}=await sb.auth.updateUser({email:em});
+  btn.disabled=false; btn.textContent='Update email · अपडेट';
+  if(error){ errEl.textContent='Failed: '+error.message; errEl.style.display='block'; return; }
+  okEl.textContent='Check the new email inbox — a confirmation link was sent. The change applies after confirming. · नयाँ इमेलमा पुष्टि लिङ्क पठाइयो।';
+  okEl.style.display='block';
+};
+document.getElementById('prPassBtn').onclick = async ()=>{
+  const errEl=document.getElementById('prPassErr'), okEl=document.getElementById('prPassOk');
+  errEl.style.display='none'; okEl.style.display='none';
+  const p1=document.getElementById('prNewPass').value, p2=document.getElementById('prNewPass2').value;
+  if(p1.length<8){ errEl.textContent='Password must be at least 8 characters · कम्तीमा ८ अक्षर'; errEl.style.display='block'; return; }
+  if(p1!==p2){ errEl.textContent='Passwords do not match · पासवर्ड मिलेन'; errEl.style.display='block'; return; }
+  const btn=document.getElementById('prPassBtn'); btn.disabled=true; btn.innerHTML='<span class="spin"></span>';
+  if(DEMO){
+    await new Promise(r=>setTimeout(r,400));
+    try{ sessionStorage.setItem('nka_demo_pass',p1); }catch(e){}
+    btn.disabled=false; btn.textContent='Update password · अपडेट';
+    okEl.textContent='Demo: password changed for this session.'; okEl.style.display='block';
+    document.getElementById('prNewPass').value=''; document.getElementById('prNewPass2').value='';
+    return;
+  }
+  const {error}=await sb.auth.updateUser({password:p1});
+  btn.disabled=false; btn.textContent='Update password · अपडेट';
+  if(error){ errEl.textContent='Failed: '+error.message; errEl.style.display='block'; return; }
+  okEl.textContent='Password updated. Use it from your next login. · पासवर्ड परिवर्तन भयो।'; okEl.style.display='block';
+  document.getElementById('prNewPass').value=''; document.getElementById('prNewPass2').value='';
+};
+
+checkAuth();
+</script>
+</body>
+</html>
