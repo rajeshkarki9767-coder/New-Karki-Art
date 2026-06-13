@@ -83,7 +83,7 @@ since the admin URL is publicly reachable.
 - Mobile sticky action bar: Call / WhatsApp / Directions at the bottom on phones (replaces the floating WhatsApp bubble there). All three follow admin-set contact details.
 - Before/After photos: optional "before" image per portfolio item (upload form + Edit). Site shows a Before/After badge and a toggle button in the lightbox.
   IMPORTANT for existing databases: re-run the "v2 MIGRATION" line at the bottom of schema.sql (adds the before_url column; safe to re-run).
-- Analytics: index.html loads Vercel Web Analytics. Enable it once: Vercel dashboard -> your project -> Analytics -> Enable. If not enabled, the script 404s silently and nothing breaks.
+- Analytics: to add visitor stats, enable Vercel Web Analytics (Vercel dashboard -> your project -> Analytics -> Enable). Vercel injects its own script automatically when enabled — no code change needed.
 
 ## Google Business Profile (do this — biggest impact, zero code)
 1. business.google.com -> Add business -> "New Karki Art", category "Print shop" / "Digital printing service".
