@@ -216,16 +216,9 @@ header{position:fixed;top:0;left:0;right:0;z-index:900;transition:.35s}
 /* ===== ABOUT ===== */
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center}
 .about-visual{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/3;background:linear-gradient(135deg,#0f2540,#1e293b);display:grid;place-items:center}
-.about-visual .rings{position:absolute;inset:0;display:grid;place-items:center}
-.about-visual .rings span{position:absolute;border:1.5px solid rgba(255,255,255,.12);border-radius:50%}
-.about-visual .rings span:nth-child(1){width:80%;height:80%}
-.about-visual .rings span:nth-child(2){width:55%;height:55%}
-.about-visual .rings span:nth-child(3){width:30%;height:30%;border-color:var(--amber)}
-.about-visual .about-logo{width:min(72%,420px);height:auto;z-index:1;animation:aboutFloat 5s ease-in-out infinite;filter:drop-shadow(0 10px 30px rgba(0,0,0,.35))}
-.about-visual .rings{animation:ringSpin 26s linear infinite}
-@keyframes aboutFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.015)}}
-@keyframes ringSpin{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.about-visual .about-logo{animation:none}.about-visual .rings{animation:none}}
+.about-visual .about-logo{width:min(84%,480px);height:auto;z-index:1;animation:aboutFloat 5.5s ease-in-out infinite;filter:drop-shadow(0 14px 34px rgba(0,0,0,.4))}
+@keyframes aboutFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@media(prefers-reduced-motion:reduce){.about-visual .about-logo{animation:none}}
 .about-list{list-style:none;margin-top:24px;display:grid;gap:14px}
 .about-list li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px}
 .about-list svg{flex-shrink:0;margin-top:3px;color:var(--blue)}
@@ -457,7 +450,7 @@ html{-webkit-text-size-adjust:100%}
 <div id="splash">
   <div class="splash-logo">
     <div class="splash-wrap">
-      <img class="splash-logo-img" id="splashLogo" src="assets/logo-light.png" alt="New Karki Art" width="300" height="203"><script>try{if(window.__nkaLogo){document.getElementById('splashLogo').src=window.__nkaLogo.splash;}}catch(e){}</script>
+      <img class="splash-logo-img" id="splashLogo" src="assets/logo-light.png" alt="New Karki Art" width="300" height="202"><script>try{if(window.__nkaLogo){document.getElementById('splashLogo').src=window.__nkaLogo.splash;}}catch(e){}</script>
       <span class="splash-shine"></span>
     </div>
     <div class="splash-rule"></div>
@@ -472,7 +465,7 @@ html{-webkit-text-size-adjust:100%}
   <div class="nav">
     <div class="nav-inner">
       <a href="#home" class="brand" aria-label="New Karki Art home">
-        <img class="brand-logo" id="navLogo" src="assets/nav-light.png" alt="New Karki Art" width="160" height="99"><script>try{if(window.__nkaLogo){document.getElementById('navLogo').src=window.__nkaLogo.nav;}}catch(e){}</script>
+        <img class="brand-logo" id="navLogo" src="assets/nav-light.png" alt="New Karki Art" width="160" height="105"><script>try{if(window.__nkaLogo){document.getElementById('navLogo').src=window.__nkaLogo.nav;}}catch(e){}</script>
       </a>
       <nav class="nav-links" id="navLinks">
         <a href="#home" data-en="Home" data-ne="गृह">Home</a>
@@ -543,8 +536,7 @@ html{-webkit-text-size-adjust:100%}
 <section id="about">
   <div class="wrap about-grid">
     <div class="about-visual reveal">
-      <div class="rings"><span></span><span></span><span></span></div>
-      <img id="aboutLogo" class="about-logo" src="assets/logo-dark.png" alt="New Karki Art" width="420" height="285" loading="lazy">
+      <img id="aboutLogo" class="about-logo" src="assets/logo-dark.png" alt="New Karki Art" width="460" height="321" loading="lazy">
     </div>
     <div class="about-copy reveal">
       <div class="eyebrow" data-en="About Us" data-ne="हाम्रोबारे">About Us</div>
@@ -1133,6 +1125,15 @@ async function loadRemoteContent(){
     }
   }catch(e){ /* offline or Supabase down — baked-in defaults stay */ }
 }
+// Normalize a Nepali phone number to international form 977XXXXXXXXXX (no +).
+// Handles: 00977…, +977…, 977…, and bare 10-digit local numbers.
+function normNepali(raw){
+  let d=String(raw||'').replace(/\D/g,'');
+  if(d.startsWith('00977')) d=d.slice(2);   // strip 00 exit code -> 977…
+  else if(d.startsWith('00')) d=d.slice(2);  // any other 00-prefixed intl number
+  if(!d.startsWith('977')) d='977'+d;         // bare local -> prepend country code
+  return d;
+}
 function applyRemote(d){
   const setKey=(key,en,ne)=>{ if(en==null&&ne==null)return; document.querySelectorAll('[data-key="'+key+'"]').forEach(el=>{ if(en!=null)el.setAttribute('data-en',en); if(ne!=null)el.setAttribute('data-ne',ne); }); };
   if(d.hero){ setKey('hero_head',d.hero.headline_en,d.hero.headline_ne); setKey('hero_sub',d.hero.sub_en,d.hero.sub_ne); }
@@ -1147,13 +1148,13 @@ function applyRemote(d){
     if(c.hours_en||c.hours_ne) setKey('hours',c.hours_en,c.hours_ne);
     if(c.address_en||c.address_ne) setKey('address',c.address_en,c.address_ne);
     if(c.phone){
-      const digits=c.phone.replace(/\D/g,'');
-      const tel=c.phone.trim().startsWith('+')?'+'+digits:'+977'+digits.replace(/^977/,'');
+      const digits=normNepali(c.phone);
+      const tel='+'+digits;
       document.querySelectorAll('.js-tel').forEach(a=>{a.href='tel:'+tel;a.textContent=c.phone;});
       document.querySelectorAll('.js-tel-href').forEach(a=>a.href='tel:'+tel);
     }
     if(c.whatsapp){
-      WA_NUMBER='977'+c.whatsapp.replace(/\D/g,'').replace(/^977/,'');
+      WA_NUMBER=normNepali(c.whatsapp);
       document.querySelectorAll('.js-wa').forEach(a=>{a.href='https://wa.me/'+WA_NUMBER;if(/\d{6,}/.test(a.textContent))a.textContent=c.whatsapp;});
       document.querySelectorAll('.js-wa-href').forEach(a=>a.href='https://wa.me/'+WA_NUMBER);
     }

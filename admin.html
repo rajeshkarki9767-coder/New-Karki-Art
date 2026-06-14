@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=Mukta:wght@400;600&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230f2540'/><circle cx='50' cy='50' r='22' fill='none' stroke='%231466B8' stroke-width='5'/><line x1='50' y1='14' x2='50' y2='86' stroke='%23E0A53B' stroke-width='4'/><line x1='14' y1='50' x2='86' y2='50' stroke='%23E0A53B' stroke-width='4'/></svg>">
+<link rel="icon" type="image/png" href="assets/favicon.png">
 <script>(function(){try{var t=localStorage.getItem('nka_theme');if(t!=='dark'&&t!=='light')t='light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
 <style>
 :root{--ink:#0f2540;--blue:#1466B8;--amber:#E0A53B;--bg:#FCFCFD;--surface:#fff;--text:#13233a;--muted:#5d6b80;--border:rgba(15,37,64,.12);--r:14px}
@@ -129,17 +129,47 @@ body{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
 }
 /* tablet: comfortable max width */
 @media(min-width:760px) and (max-width:980px){.wrap{max-width:680px}}
+
+/* ===== SPLASH ===== */
+#splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:grid;place-items:center;transition:opacity .6s ease,visibility .6s}
+#splash.hide{opacity:0;visibility:hidden}
+.splash-logo{text-align:center}
+.splash-wrap{position:relative;display:inline-block;overflow:hidden;border-radius:18px}
+.splash-logo-img{width:min(340px,72vw);height:auto;display:block;opacity:0;transform:scale(.82);animation:splashIn 1.1s cubic-bezier(.16,1,.3,1) .2s forwards, splashGlow 2.4s ease-in-out .9s}
+.splash-shine{position:absolute;inset:0;pointer-events:none;z-index:2;border-radius:18px;overflow:hidden}
+.splash-shine::before{content:"";position:absolute;top:-20%;left:-60%;width:40%;height:140%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);opacity:0;animation:splashSweep 1.3s ease-in-out 1.0s}
+[data-theme="dark"] .splash-shine::before{background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent)}
+.splash-rule{height:3px;width:0;margin:18px auto 0;border-radius:3px;background:linear-gradient(90deg,transparent,var(--amber),transparent);animation:splashRule .9s ease-out 1.2s forwards}
+.splash-tag{margin-top:14px;color:var(--muted);font-size:13px;letter-spacing:.18em;text-transform:uppercase;opacity:0;animation:splashFade .8s ease 1.4s forwards}
+@keyframes splashIn{0%{opacity:0;transform:scale(.82)}60%{opacity:1}100%{opacity:1;transform:scale(1)}}
+@keyframes splashGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(224,165,59,0))}50%{filter:drop-shadow(0 6px 26px rgba(224,165,59,.35))}}
+@keyframes splashSweep{0%{left:-60%;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:120%;opacity:0}}
+@keyframes splashRule{from{width:0}to{width:min(220px,46vw)}}
+@keyframes splashFade{to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.splash-logo-img{animation:splashIn .5s forwards}.splash-shine::before,.splash-rule,.splash-tag{animation:none}.splash-rule{width:min(220px,46vw)}.splash-tag{opacity:1}}
 </style>
 </head>
 <body>
+
+<!-- ============ SPLASH ============ -->
+<div id="splash">
+  <div class="splash-logo">
+    <div class="splash-wrap">
+      <img class="splash-logo-img" id="splashLogo" src="assets/logo-light.png" alt="New Karki Art" width="300" height="202"><script>try{var _t=document.documentElement.getAttribute("data-theme")==="dark"?"dark":"light";document.getElementById("splashLogo").src="assets/logo-"+_t+".png";}catch(e){}</script>
+      <span class="splash-shine"></span>
+    </div>
+    <div class="splash-rule"></div>
+    <div class="splash-tag">Admin Panel · एडमिन</div>
+  </div>
+</div>
 
 <!-- ============ LOGIN ============ -->
 <div id="loginView">
   <button class="theme-btn" id="themeToggleLogin" aria-label="Toggle theme" title="Toggle theme"><svg id="thIcoLogin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
   <div class="login-card">
     <div class="login-logo">
-      <img class="login-logo-img login-logo-light" src="assets/login-light.png" alt="New Karki Art" width="220" height="137">
-      <img class="login-logo-img login-logo-dark" src="assets/login-dark.png" alt="New Karki Art" width="220" height="137">
+      <img class="login-logo-img login-logo-light" src="assets/login-light.png" alt="New Karki Art" width="220" height="144">
+      <img class="login-logo-img login-logo-dark" src="assets/login-dark.png" alt="New Karki Art" width="220" height="144">
     </div>
     <h1 style="text-align:center">New <span style="color:var(--amber)">Karki</span> Art</h1>
     <p style="text-align:center">Admin Login · एडमिन लगइन</p>
@@ -576,7 +606,7 @@ function renderTst(){
 function delTst(i){ DATA.testimonials.splice(i,1); renderTst(); markDirty(); }
 document.getElementById('addTst').onclick=()=>{ (DATA.testimonials=DATA.testimonials||[]).push({en:'',ne:'',who:''}); renderTst(); markDirty(); };
 
-function esc(s){ return (s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function esc(s){ return String(s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 /* ---------- BRAND LOGO ---------- */
 let pendingLogo=null;
@@ -675,8 +705,8 @@ function renderPhotos(){
   list.innerHTML=PHOTOS.map((p,i)=>`
     <div>
       <div class="pitem">
-        <img src="${p.img_url}" alt="">
-        <div class="pmeta"><b>${esc(p.title_en)}</b><small>${CATLABEL[p.cat]||p.cat}${p.before_url?' · B/A':''}</small></div>
+        <img src="${esc(p.img_url)}" alt="">
+        <div class="pmeta"><b>${esc(p.title_en)}</b><small>${CATLABEL[p.cat]||esc(p.cat)}${p.before_url?' · B/A':''}</small></div>
         <div style="display:flex;flex-direction:column;gap:4px">
           <button class="btn btn-s btn-sm" style="padding:4px 10px" onclick="movePhoto(${i},-1)" aria-label="Move up" ${i===0?'disabled':''}>▲</button>
           <button class="btn btn-s btn-sm" style="padding:4px 10px" onclick="movePhoto(${i},1)" aria-label="Move down" ${i===PHOTOS.length-1?'disabled':''}>▼</button>
@@ -871,6 +901,15 @@ checkAuth();
   var a=document.getElementById('themeToggleLogin');if(a)a.onclick=toggle;
   var b=document.getElementById('themeToggleAdmin');if(b)b.onclick=toggle;
   setTheme(curr()); // sync icons on load
+})();
+</script>
+<script>
+(function(){
+  var splash=document.getElementById('splash');
+  if(!splash) return;
+  function hide(){ splash.classList.add('hide'); }
+  window.addEventListener('load',function(){ setTimeout(hide,3000); });
+  setTimeout(hide,3300); // hard cap
 })();
 </script>
 </body>
