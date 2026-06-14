@@ -8,8 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=Mukta:wght@400;600&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230f2540'/><circle cx='50' cy='50' r='22' fill='none' stroke='%231466B8' stroke-width='5'/><line x1='50' y1='14' x2='50' y2='86' stroke='%23E0A53B' stroke-width='4'/><line x1='14' y1='50' x2='86' y2='50' stroke='%23E0A53B' stroke-width='4'/></svg>">
+<script>(function(){try{var t=localStorage.getItem('nka_theme');if(t!=='dark'&&t!=='light')t='light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
 <style>
 :root{--ink:#0f2540;--blue:#1466B8;--amber:#E0A53B;--bg:#FCFCFD;--surface:#fff;--text:#13233a;--muted:#5d6b80;--border:rgba(15,37,64,.12);--r:14px}
+[data-theme="dark"]{--ink:#0a1626;--blue:#3b8fe0;--amber:#E0A53B;--bg:#0a1626;--surface:#0f2138;--text:#e8eef6;--muted:#9fb0c6;--border:rgba(255,255,255,.12)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:90px}
 h1,h2,h3{font-family:'Sora'}
@@ -24,6 +26,11 @@ h1,h2,h3{font-family:'Sora'}
 .btn-sm{padding:8px 14px;font-size:13.5px}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 /* login */
+.demo-hint{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8}
+[data-theme="dark"] .demo-hint{background:rgba(59,143,224,.12);border:1px solid rgba(59,143,224,.35);color:#9cc4f0}
+.theme-btn{position:absolute;top:16px;right:16px;z-index:2;width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:grid;place-items:center;transition:.2s}
+.theme-btn:hover{border-color:var(--blue)}
+.topbar .theme-btn{position:static;width:38px;height:38px;background:transparent;border-color:rgba(255,255,255,.25);color:#fff}
 #loginView{min-height:100vh;display:grid;place-items:center;padding:20px;position:relative;overflow:hidden}
 #loginView::before{content:"";position:absolute;inset:0;background:
   radial-gradient(circle at 22% 18%,rgba(20,102,184,.14),transparent 46%),
@@ -31,8 +38,11 @@ h1,h2,h3{font-family:'Sora'}
   var(--bg);z-index:0}
 #loginView::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(20,102,184,.08) 2px,transparent 2px);background-size:26px 26px;z-index:0}
 .login-card{position:relative;z-index:1;background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:34px;max-width:380px;width:100%;box-shadow:0 24px 64px -20px rgba(15,37,64,.28)}
-.login-mark{width:64px;height:64px;border-radius:18px;background:var(--ink);display:grid;place-items:center;margin:0 auto 18px}
-.login-mark svg{width:40px;height:40px}
+.login-logo{text-align:center;margin:0 auto 18px}
+.login-logo-img{width:200px;max-width:75%;height:auto;display:inline-block}
+.login-logo-dark{display:none}
+[data-theme="dark"] .login-logo-light{display:none}
+[data-theme="dark"] .login-logo-dark{display:inline-block}
 .login-card h1{font-size:22px;margin-bottom:6px}
 .login-card p{color:var(--muted);font-size:14px;margin-bottom:22px}
 /* fields */
@@ -90,17 +100,50 @@ h1,h2,h3{font-family:'Sora'}
 @keyframes sp{to{transform:rotate(360deg)}}
 #adminView{display:none}
 .err-msg{color:#dc2626;font-size:13.5px;margin-top:10px;display:none}
+
+/* ===== MOBILE & RESPONSIVE POLISH ===== */
+html{-webkit-text-size-adjust:100%}
+body{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
+.topbar{padding-top:max(14px,env(safe-area-inset-top))}
+.topbar .wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+/* min 44px tap targets */
+.btn,.theme-btn,.drawer-link,#drawerBtn{min-height:44px}
+.theme-btn{min-width:44px}
+.btn-sm{min-height:42px}
+@media(max-width:600px){
+  .topbar b{font-size:16px}
+  .wrap{padding:0 14px}
+  .card{padding:18px 16px;border-radius:14px}
+  .card h3{font-size:16px}
+  .login-card{padding:26px 20px;border-radius:18px}
+  .field label{font-size:13.5px}
+  .field{margin-bottom:14px}
+  .drawer-link{padding:13px 14px;font-size:15px}
+  .btn{padding:12px 18px;font-size:15px}
+  h1{font-size:20px}
+}
+@media(max-width:380px){
+  .topbar b{font-size:15px}
+  .card{padding:16px 13px}
+  .login-card{padding:22px 16px}
+}
+/* tablet: comfortable max width */
+@media(min-width:760px) and (max-width:980px){.wrap{max-width:680px}}
 </style>
 </head>
 <body>
 
 <!-- ============ LOGIN ============ -->
 <div id="loginView">
+  <button class="theme-btn" id="themeToggleLogin" aria-label="Toggle theme" title="Toggle theme"><svg id="thIcoLogin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
   <div class="login-card">
-    <div class="login-mark"><svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><circle cx="50" cy="50" r="26" stroke="#1466B8" stroke-width="6"/><line x1="50" y1="10" x2="50" y2="90" stroke="#E0A53B" stroke-width="5"/><line x1="10" y1="50" x2="90" y2="50" stroke="#E0A53B" stroke-width="5"/></svg></div>
+    <div class="login-logo">
+      <img class="login-logo-img login-logo-light" src="assets/login-light.png" alt="New Karki Art" width="220" height="137">
+      <img class="login-logo-img login-logo-dark" src="assets/login-dark.png" alt="New Karki Art" width="220" height="137">
+    </div>
     <h1 style="text-align:center">New <span style="color:var(--amber)">Karki</span> Art</h1>
     <p style="text-align:center">Admin Login · एडमिन लगइन</p>
-    <div id="demoHint" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:16px">Demo login — email: <b>newkarkiart88@gmail.com</b><br>password: <b>BalkrishnaKarkiArt@2083</b></div>
+    <div id="demoHint" class="demo-hint" style="display:none;padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:16px">Demo login — email: <b>newkarkiart88@gmail.com</b><br>password: <b>BalkrishnaKarkiArt@2083</b></div>
     <div class="field"><label>Email</label><input type="email" id="loginEmail" autocomplete="username"></div>
     <div class="field"><label>Password · पासवर्ड</label>
       <div style="position:relative">
@@ -131,7 +174,7 @@ h1,h2,h3{font-family:'Sora'}
   <div class="topbar">
     <div class="wrap">
       <b>New <span>Karki</span> Art — Admin</b>
-      <button class="btn btn-s btn-sm" id="logoutBtn">Logout</button>
+      <button class="theme-btn" id="themeToggleAdmin" aria-label="Toggle theme" title="Toggle theme"><svg id="thIcoAdmin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
     </div>
   </div>
 
@@ -264,6 +307,11 @@ h1,h2,h3{font-family:'Sora'}
         <button class="btn btn-p btn-sm" id="prPassBtn">Update password · अपडेट</button>
         <div class="err-msg" id="prPassErr"></div>
         <div class="note" id="prPassOk" style="display:none;background:#dcfce7;border-color:#86efac;color:#166534;margin-top:12px"></div>
+      </div>
+      <div class="card">
+        <h3>🚪 Session · सत्र</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:14px">Sign out of the admin panel. · एडमिनबाट लगआउट गर्नुहोस्।</p>
+        <button class="btn btn-s btn-sm" id="logoutBtn" style="width:100%">Logout · लगआउट</button>
       </div>
     </div>
 
@@ -710,7 +758,7 @@ async function saveEdit(i){
 async function loadPortfolio(){
   if(DEMO){ PHOTOS=DEMO_PORTFOLIO; renderPhotos(); return; }
   const {data,error} = await sb.from('portfolio').select('*').order('sort_order',{ascending:true}).order('created_at',{ascending:false});
-  if(error){ document.getElementById('pList').innerHTML='<small>Could not load: '+error.message+'</small>'; return; }
+  if(error){ const el=document.getElementById('pList'); el.innerHTML='<small></small>'; el.firstChild.textContent='Could not load: '+error.message; return; }
   PHOTOS=data; renderPhotos();
 }
 document.getElementById('pFile').addEventListener('change',e=>{
@@ -808,6 +856,22 @@ document.getElementById('prPassBtn').onclick = async ()=>{
 };
 
 checkAuth();
+</script>
+<script>
+(function(){
+  function curr(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';}
+  function setTheme(t){
+    document.documentElement.setAttribute('data-theme',t);
+    try{localStorage.setItem('nka_theme',t);}catch(e){}
+    var sun='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    var moon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    ['thIcoLogin','thIcoAdmin'].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=(t==='dark'?sun:moon);});
+  }
+  function toggle(){setTheme(curr()==='dark'?'light':'dark');}
+  var a=document.getElementById('themeToggleLogin');if(a)a.onclick=toggle;
+  var b=document.getElementById('themeToggleAdmin');if(b)b.onclick=toggle;
+  setTheme(curr()); // sync icons on load
+})();
 </script>
 </body>
 </html>

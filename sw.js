@@ -1,5 +1,5 @@
 // New Karki Art — minimal offline shell (v2)
-const CACHE = 'nka-v2';
+const CACHE = 'nka-v8';
 const SHELL = ['/', '/index.html', '/config.js', '/manifest.json', '/icons/icon-192.png'];
 
 self.addEventListener('install', e => {
